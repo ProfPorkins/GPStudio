@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GPStudio.Server.GPModelerServer">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Interface Servers\GPModelerServer.cs</FileName>
+      <HashCode>AgivAAAACUCAAWkAAgAoAAEhMAAoKIwAADAAKCAAQBM=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Fitness" />
+      <Property Name="FitnessFunction" />
+      <Property Name="Profile" />
+      <Property Name="Training" />
+    </ShowAsAssociation>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="Fitness" Type="GPStudio.Server.GPFitnessCustomBase" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.5" Y="1.534" />
+        <Point X="4.875" Y="1.534" />
+        <Point X="4.875" Y="1.073" />
+        <Point X="6.5" Y="1.073" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="1.36" Y="-0.575" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="FitnessFunction" Type="System.String" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.5" Y="1.96" />
+        <Point X="4.875" Y="1.96" />
+        <Point X="4.875" Y="2.005" />
+        <Point X="8.75" Y="2.005" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="3.152" Y="-0.003" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Profile" Type="GPStudio.Shared.GPModelingProfile" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.5" Y="2.264" />
+        <Point X="8.125" Y="2.264" />
+        <Point X="8.125" Y="2.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="2.914" Y="0.402" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Training" Type="GPStudio.Shared.GPTrainingData" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.5" Y="2.5" />
+        <Point X="4.74" Y="2.5" />
+        <Point X="4.74" Y="5.739" />
+        <Point X="5" Y="5.739" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="-0.421" Y="3.143" Height="0.16" Width="0.785" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GPStudio.Server.GPFitnessCustomBase">
+    <Position X="6.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>GPFitnessCustomBase.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.String" Collapsed="true">
+    <Position X="8.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GPStudio.Shared.GPModelingProfile">
+    <Position X="7" Y="2.75" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GPStudio.Shared.GPTrainingData">
+    <Position X="5" Y="3.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Interface Name="GPStudio.Interfaces.IGPModeler">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+</ClassDiagram>

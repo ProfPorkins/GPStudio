@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GPStudio.Server.GPNode">
+    <Position X="10.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>GPNode.cs</FileName>
+      <HashCode>AAAAAAAAEAAAAAAgAAAAAAAAAAAAABACAAAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GPStudio.Server.GPNodeFunction">
+    <Position X="10.25" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>GPNodeFunction.cs</FileName>
+      <HashCode>gAAAAAQAAAAAAAAGiAAEAAAAAAAAABICAAAQAAAAABA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GPStudio.Server.GPNodeFunctionADF">
+    <Position X="7.75" Y="11.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Functions\GPNodeFunctionADF.cs</FileName>
+      <HashCode>AAAAAgAAAAAAEQAEAAAAAAQAAAAAABIAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPNodeFunctionSetMem">
+    <Position X="5" Y="8.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Functions\GPNodeFunctionSetMem.cs</FileName>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPNodeFunctionADL">
+    <Position X="12.75" Y="11.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Functions\GPNodeFunctionADL.cs</FileName>
+      <HashCode>AAAIAAAAAAAEAAQEAAAAAAABAAAAAJAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPNodeFunctionADR">
+    <Position X="10.25" Y="11.75" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Functions\GPNodeFunctionADR.cs</FileName>
+      <HashCode>ACAAAAAAABAAAAAFAAAAAABAAAAAABAgAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPNodeFunctionADRoot">
+    <Position X="10" Y="8.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Functions\GPNodeFunctionADRoot.cs</FileName>
+      <HashCode>AAAAAAQAAABAAAABABAAAAAAAAAAEAAAAAAAAAAAABA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="GPStudio.Server.GPNodeFunctionGetMem">
+    <Position X="15.25" Y="8.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Functions\GPNodeFunctionGetMem.cs</FileName>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

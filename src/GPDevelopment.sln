@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPStudio", "GPStudio\GPStudio.csproj", "{7BFD7CEE-5E07-42CE-A0F4-07B0B5FCCF02}"
+	ProjectSection(ProjectDependencies) = postProject
+		{32483F31-FCF8-4091-8B66-72C78C2E1285} = {32483F31-FCF8-4091-8B66-72C78C2E1285}
+		{16CDEA7B-D4ED-4D11-B160-86952802509D} = {16CDEA7B-D4ED-4D11-B160-86952802509D}
+		{0ED4A1A3-5521-4E2B-961A-AC63B3BB2317} = {0ED4A1A3-5521-4E2B-961A-AC63B3BB2317}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPServer", "GPServer\GPServer.csproj", "{32483F31-FCF8-4091-8B66-72C78C2E1285}"
+	ProjectSection(ProjectDependencies) = postProject
+		{16CDEA7B-D4ED-4D11-B160-86952802509D} = {16CDEA7B-D4ED-4D11-B160-86952802509D}
+		{0ED4A1A3-5521-4E2B-961A-AC63B3BB2317} = {0ED4A1A3-5521-4E2B-961A-AC63B3BB2317}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPInterface", "GPInterface\GPInterface.csproj", "{16CDEA7B-D4ED-4D11-B160-86952802509D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPShared", "GPShared\GPShared.csproj", "{0ED4A1A3-5521-4E2B-961A-AC63B3BB2317}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7BFD7CEE-5E07-42CE-A0F4-07B0B5FCCF02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BFD7CEE-5E07-42CE-A0F4-07B0B5FCCF02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BFD7CEE-5E07-42CE-A0F4-07B0B5FCCF02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BFD7CEE-5E07-42CE-A0F4-07B0B5FCCF02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32483F31-FCF8-4091-8B66-72C78C2E1285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32483F31-FCF8-4091-8B66-72C78C2E1285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32483F31-FCF8-4091-8B66-72C78C2E1285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32483F31-FCF8-4091-8B66-72C78C2E1285}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16CDEA7B-D4ED-4D11-B160-86952802509D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16CDEA7B-D4ED-4D11-B160-86952802509D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16CDEA7B-D4ED-4D11-B160-86952802509D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16CDEA7B-D4ED-4D11-B160-86952802509D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ED4A1A3-5521-4E2B-961A-AC63B3BB2317}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED4A1A3-5521-4E2B-961A-AC63B3BB2317}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED4A1A3-5521-4E2B-961A-AC63B3BB2317}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED4A1A3-5521-4E2B-961A-AC63B3BB2317}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		AMDCaProjectFile = C:\Work\GPDevelopment2\CodeAnalyst\GPDevelopment.caw
+		SolutionGuid = {223A09A5-42DF-4DFD-9789-DC60019EE059}
+	EndGlobalSection
+EndGlobal

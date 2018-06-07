@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GPStudio.Server.GPLanguageWriter">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriter.cs</FileName>
+      <HashCode>AAAAAABAAAAAAQABQAAAAAQAAAQAAAAAAAAkAEEQAAA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Struct Name="GPStudio.Server.GPLanguageWriter.tagUserDefinedFunction" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Language Writers\GPLanguageWriter.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+  </Class>
+  <Class Name="GPStudio.Server.GPLanguageWriterC">
+    <Position X="8" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriterC.cs</FileName>
+      <HashCode>AAAAAgAAABAAAQABQAAAAAQAAAQAAgAECQAkAEAABRI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPLanguageWriterCPP">
+    <Position X="16.25" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriterCPP.cs</FileName>
+      <HashCode>AAAAAgAAABAAAQAhQACAAAUAAESAAgAECAAkAEAAgRI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPLanguageWriterCSharp">
+    <Position X="13.5" Y="10.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriterCSharp.cs</FileName>
+      <HashCode>AAAAAAAAAAAEAAAgQAAIAAAAAAAAAAgACAAgAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPLanguageWriterCSJBase">
+    <Position X="12" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriterCSJBase.cs</FileName>
+      <HashCode>AAAAAgAAABAEAQAhQACIAAQAAAQAAggECQAkAEAABBI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPLanguageWriterFortran">
+    <Position X="19" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriterFortran.cs</FileName>
+      <HashCode>AQAAAAAAABAAEQABQAAAAAYBAAQAAgAECAAkAEAAARI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPLanguageWriterJava">
+    <Position X="10.75" Y="10.5" Width="2" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriterJava.cs</FileName>
+      <HashCode>AAAAAAAAAAAEAAAgQAAIAAAAAAAAAAgACAAgAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPLanguageWriterVBNet">
+    <Position X="2.75" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriterVBNet.cs</FileName>
+      <HashCode>AAAAAgAAABAAAQAhQACAAAQAAAQAAgAECQAkAEAABBI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GPStudio.Server.GPLanguageWriterXML">
+    <Position X="5.5" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>Language Writers\GPLanguageWriterXML.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAQARQBAAAAQAAAQAAAAAACAkAEAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+</ClassDiagram>

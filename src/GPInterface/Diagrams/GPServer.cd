@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Interface Name="GPStudio.Interfaces.IGPServer">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IGPServer.cs</FileName>
+      <HashCode>AAIAAQAAAAGAAAAAAAAAAAEAACAAAAAAAAEAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Modeler" />
+      <Property Name="Compiler" />
+      <Property Name="FunctionSet" />
+      <Property Name="Program" />
+      <Property Name="LanguageWriter" />
+      <Property Name="CustomFitness" />
+    </ShowAsAssociation>
+    <AssociationLine Name="Modeler" Type="GPStudio.Interfaces.IGPModeler">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.027" Y="0.07" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Compiler" Type="GPStudio.Interfaces.IGPCompiler">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.037" Y="0.07" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="FunctionSet" Type="GPStudio.Interfaces.IGPFunctionSet">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.14" Y="0.06" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Program" Type="GPStudio.Interfaces.IGPProgram">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.057" Y="0.07" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="LanguageWriter" Type="GPStudio.Interfaces.IGPLanguageWriter">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.338" Y="0.07" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="CustomFitness" Type="GPStudio.Interfaces.IGPCustomFitness">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.221" Y="0.12" />
+      </MemberNameLabel>
+    </AssociationLine>
+  </Interface>
+  <Interface Name="GPStudio.Interfaces.IGPModeler">
+    <Position X="1" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IGPServer.cs</FileName>
+      <HashCode>AgAIAAAACUAAASAAAgAAAAEBEAAIIAQAABAAIAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GPStudio.Interfaces.IGPFunctionSet">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IGPServer.cs</FileName>
+      <HashCode>AAAAAIAQgAAAAAAACAAAAAQAAAAAAAAAAAAEAABAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GPStudio.Interfaces.IGPCompiler">
+    <Position X="4.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IGPServer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAgBAAAAAAAAQAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GPStudio.Interfaces.IGPProgram">
+    <Position X="6.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IGPServer.cs</FileName>
+      <HashCode>AAAAAAAACACIAAAAAAAAAAEAEAAAAAAAABAAAAAgAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GPStudio.Interfaces.IGPLanguageWriter">
+    <Position X="8" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IGPServer.cs</FileName>
+      <HashCode>EAAAAAAQAAAAAAAAAwAAAAAAAAABAAAAgAAACAFAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="GPStudio.Interfaces.IGPCustomFitness">
+    <Position X="9.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>IGPServer.cs</FileName>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAIAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+</ClassDiagram>

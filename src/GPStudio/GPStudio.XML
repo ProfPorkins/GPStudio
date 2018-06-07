@@ -1,0 +1,1825 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GPStudio</name>
+    </assembly>
+    <members>
+        <member name="T:GPStudio.Client.BatchProcessingManager">
+            <summary>
+            This class manages the batch processing of models, as requested by the user.
+            Batch processing can take place without the Batch Processing form being active.
+            However, if it active, this class provides the ability to report results so
+            a visual status of the modeling can be maintained.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.BatchProcessingManager.BatchProcess">
+            <summary>
+            Batch process queue entry
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.InitWorkerThread">
+            <summary>
+            Creates the worker thread that manages the batch processing of models.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.BatchThreadStart(System.Object)">
+            <summary>
+            Private thread that manages the batch modeling
+            </summary>
+            <param name="arg">Reference to the object the thread belongs to</param>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.BatchModel(GPStudio.Client.BatchProcessingManager.BatchProcess)">
+            <summary>
+            Manages the modeling for a batch process.
+            </summary>
+            <param name="Process"></param>
+            <returns>true if model was created, false otherwise</returns>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.ReceiveFitness(System.Int32,System.Int32,GPStudio.Client.ModelingResults.ServerData)">
+            <summary>
+            Method that receives reports of fitness from the modeler
+            </summary>
+            <param name="Server"></param>
+            <param name="Generation"></param>
+            <param name="Stats"></param>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.ReceiveStatus(System.String)">
+            <summary>
+            Method that receives reports of the modeling status from the modeler
+            </summary>
+            <param name="Message"></param>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.BroadcastModelStarted(GPStudio.Client.BatchProcessingManager.BatchProcess)">
+            <summary>
+            Sends notification to all clients a batch process has just started, indicating which one it is.
+            </summary>
+            <param name="Process"></param>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.BroadcastModelComplete(GPStudio.Client.BatchProcessingManager.BatchProcess)">
+            <summary>
+            Sends notification to any clients a batch process has finished modeling
+            </summary>
+            <param name="Process"></param>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.RegisterClient(GPStudio.Client.IBatchClient)">
+            <summary>
+            Allows code to register itself to receive notifications of batch processing events
+            </summary>
+            <param name="Client">Reference to the IBatchClient interface</param>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.UnregisterClient(GPStudio.Client.IBatchClient)">
+            <summary>
+            Allows a client to unregister itself from event notification.
+            </summary>
+            <param name="Client">Reference to the IBatchClient interface to be removed</param>
+        </member>
+        <member name="T:GPStudio.Client.BatchProcessingManager.Command">
+            <summary>
+            These are the different commands the batch processing manager can send.  Right now
+            it's pretty simple, execute and simulation and terminate the active simulation.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.AddSimulation(GPStudio.Client.GPProjectProfile,System.Int32,System.Int32)">
+            <summary>
+            Add a new simulation to be performed.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.BatchProcessingManager.m_Queue">
+            <summary>
+            Container to hold the current list of pending batch processes.  Using a List instead
+            of a Queue, because we need to access members that are in places other than the
+            front of the queue.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.CancelSimulation(System.Object)">
+            <summary>
+            Instructs the manager to cancel indicated batch process.  If the
+            process is active, it is canceled.  If it is somewhere else in
+            the queue, it is marked as canceled.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.CancelAllSimulations">
+            <summary>
+            Get everything shut down
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.SwapProcesses(System.Object,System.Object)">
+            <summary>
+            Swaps these two processes in the pending queue
+            </summary>
+            <param name="ProcessID1"></param>
+            <param name="ProcessID2"></param>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.SuspendProcessing">
+            <summary>
+            Allows the batch processing to be suspended.  For example, to prevent
+            new processes from being started while changes to the pending processes
+            are made.
+            TODO: I know the compiler is saying that .Suspend is deprecated, but for
+            crying out loud, it is easy to use, so I'm using it!
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.ResumeProcessing">
+            <summary>
+            Resumes the thread that manages the batch processing.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.BatchProcessingManager.Terminate">
+            <summary>
+            Tell the command thread to terminate.  This should only be called when the program
+            is shutting down, cleaning up the BatchProcessingManager in the process.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.BatchProcessingManager.ActiveSimulation">
+            <summary>
+            Property that allows anyone to find out if any simulations are currently active.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.IBatchClient">
+            <summary>
+            This interface defines the required behavior of any code that wants
+            to stay current with the activities of the batch processing manager.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.IBatchClient.AddProcess(System.Object,System.String,System.String,System.DateTime,System.DateTime,System.Boolean)">
+            <summary>
+            Informs the client a new simulation was added to the queue
+            </summary>
+            <param name="ProcessID"></param>
+            <param name="ProjectName"></param>
+            <param name="ProfileName"></param>
+            <param name="TimeAdded"></param>
+        </member>
+        <member name="M:GPStudio.Client.IBatchClient.ProcessStarted(System.Object,System.DateTime,System.Int32)">
+            <summary>
+            Informs the client a new simulation has started
+            </summary>
+            <param name="ProcessID"></param>
+            <param name="TimeStarted"></param>
+            <param name="MaxGenerations"></param>
+        </member>
+        <member name="M:GPStudio.Client.IBatchClient.ProcessUpdate(System.Int32)">
+            <summary>
+            Informs the client the generation has completed
+            </summary>
+            <param name="Generation"></param>
+        </member>
+        <member name="M:GPStudio.Client.IBatchClient.ProcessStatus(System.String)">
+            <summary>
+            Informs the client of any modeling status information from the modeler
+            </summary>
+            <param name="Message"></param>
+        </member>
+        <member name="M:GPStudio.Client.IBatchClient.ProcessComplete(System.Object,System.DateTime,System.Boolean,System.Double,System.Int32,System.Int32)">
+            <summary>
+            Informs the client a simulation has completed, along with some statistical information
+            regarding the result.
+            </summary>
+            <param name="ProcessID"></param>
+            <param name="TimeComplete"></param>
+            <param name="Canceled"></param>
+            <param name="Fitness"></param>
+            <param name="Hits"></param>
+            <param name="Complexity"></param>
+        </member>
+        <member name="F:GPStudio.Client.fmAboutBox.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmAboutBox.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmAboutBox.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.fmBatchProcessing.Active">
+            <summary>
+            Property that indicates whether or not this form is already up
+            and running
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmBatchProcessing.#ctor">
+            <summary>
+            Default constructor, get the components created and the active flag
+            set to true.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmBatchProcessing.ProcessStarted(System.Object,System.DateTime,System.Int32)">
+            <summary>
+            Indicates a new batch modeling process has started
+            </summary>
+            <param name="ProcessID"></param>
+            <param name="TimeStarted"></param>
+            <param name="MaxGenerations"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmBatchProcessing.ProcessUpdate(System.Int32)">
+            <summary>
+            A new generation was completed, update the progress bar to indicate the progress.
+            </summary>
+            <param name="Generation"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmBatchProcessing.ProcessStatus(System.String)">
+            <summary>
+            Received a modeling message, show it in the status bar
+            </summary>
+            <param name="Message"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmBatchProcessing.ProcessComplete(System.Object,System.DateTime,System.Boolean,System.Double,System.Int32,System.Int32)">
+            <summary>
+            A batch modeling process completed, update the UI with the results.
+            </summary>
+            <param name="ProcessID"></param>
+            <param name="TimeComplete"></param>
+            <param name="Canceled"></param>
+        </member>
+        <member name="F:GPStudio.Client.fmBatchProcessing.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmBatchProcessing.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmBatchProcessing.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmDataManager.NameColumns">
+            <summary>
+            Used to give Input/Target column headers for the Training just loaded
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmDataManager.InitializeFileList">
+            <summary>
+            Loads the list of data files imported into the database into the
+            left side listview display.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmDataManager.DisplayDataGraph(GPStudio.Client.GPModelingData)">
+            <summary>
+            Fill the graph with the Training set
+            </summary>
+            <param name="Training">Reference to the Training object to be plotted</param>
+        </member>
+        <member name="M:GPStudio.Client.fmDataManager.InitialzeDataGraph(GPStudio.Client.GPModelingData)">
+            <summary>
+            Prepare the graph to accept the plotted data
+            </summary>
+            <param name="gpData"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmDataManager.DisplayDataGrid(GPStudio.Client.GPModelingData)">
+            <summary>
+            Setup and fill the grid with the data
+            </summary>
+            <param name="gpData"></param>
+        </member>
+        <member name="F:GPStudio.Client.fmDataManager.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmDataManager.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmDataManager.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.fmFitnessEditor.Active">
+            <summary>
+            Property that indicates whether or not this form is already up
+            and running
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.fmFitnessEditor.FunctionDirty">
+            <summary>
+            Property that indicates if any changes have been made to the
+            function properties.  If it is dirty, it needs to be saved.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.InitializeFunctionList">
+            <summary>
+            Load the list of fitness functions into the list view
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.DisplayFunction(System.Int32)">
+            <summary>
+            Given the DBCode, Load and display that function
+            </summary>
+            <param name="FunctionID">DBCode of the function to load</param>
+            <returns>True if this is a master function, False otherwise</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.IsFunctionInUse(System.Int32)">
+            <summary>
+            Checks to see if this fitness function is in use.
+            </summary>
+            <param name="FunctionID">DBCode of the function to test</param>
+            <returns>True if it is in use, False otherwise</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.SaveFunction(System.Int32)">
+            <summary>
+            Get the function saved and the UI updated accordingly
+            </summary>
+            <param name="ListViewPosition">Position of the function in the listview</param>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.SaveFunctionToDB(System.Int32)">
+            <summary>
+            Save the current function back out to the DB, this is an UPDATE
+            function, not an add a new one to the database type function.
+            </summary>
+            <param name="ListViewPosition">Position of the function in the listview</param>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.DeleteFunctionFromDB(System.Int32)">
+            <summary>
+            Remove the selected function ID from the database
+            </summary>
+            <param name="FunctionID">Which function to remove</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.SetValidation(System.Int32,System.Boolean)">
+            <summary>
+            Updates the database entry of this function to be validated or not
+            validated according to the Validated parameter.
+            </summary>
+            <param name="FunctionID">DBCode of the function</param>
+            <param name="Validated">Validation state of the function</param>
+        </member>
+        <member name="F:GPStudio.Client.fmFitnessEditor.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmFitnessEditor.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.fmFunctionEditor.Active">
+            <summary>
+            Property that indicates whether or not this form is already up
+            and running
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.fmFunctionEditor.FunctionDirty">
+            <summary>
+            Property that indicates if any changes have been made to the
+            function properties.  If it is dirty, it needs to be saved.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.InitializeCategories">
+            <summary>
+            Loads the list of function categories available for selection
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.InitializeFunctionSet(System.String)">
+            <summary>
+            Load the list of functions into the listview, select from the
+            indicated language.
+            </summary>
+            <param name="FunctionLanguageID">Which language to load from</param>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.DisplayFunction(System.Int64)">
+            <summary>
+            Given the DBCode, Load and display that function
+            </summary>
+            <param name="FunctionID">DBCode of the function to load</param>
+            <returns>True if this is a master function, False otherwise</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.SaveFunctionToDB(System.Int32)">
+            <summary>
+            Save the current function back out to the DB, this is an UPDATE
+            function, not an add a new one to the database type function.
+            </summary>
+            <param name="ListViewPosition">Position of the function in the listview</param>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.WritePrototype_C(System.String,System.Int32)">
+            <summary>
+            Writes a C style function prototype
+            </summary>
+            <param name="FunctionName">Text name of the function</param>
+            <param name="Arity"># of function parameters</param>
+            <returns>String representation of the prototype</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.WritePrototype_CPP(System.String,System.Int32)">
+            <summary>
+            Writes a C++ style function prototype
+            </summary>
+            <param name="FunctionName">Text name of the function</param>
+            <param name="Arity"># of function parameters</param>
+            <returns>String representation of the prototype</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.WritePrototype_CSharp(System.String,System.Int32)">
+            <summary>
+            Writes a C# style function prototype
+            </summary>
+            <param name="FunctionName">Text name of the function</param>
+            <param name="Arity"># of function parameters</param>
+            <returns>String representation of the prototype</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.WritePrototype_VBNet(System.String,System.Int32)">
+            <summary>
+            Writes a VB.NET style function prototype
+            </summary>
+            <param name="FunctionName">Text name of the function</param>
+            <param name="Arity"># of function parameters</param>
+            <returns>String representation of the prototype</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.WritePrototype_Java(System.String,System.Int32)">
+            <summary>
+            Writes a Java style function prototype.  Reusues the C# code because
+            they are exactly the same.
+            </summary>
+            <param name="FunctionName">Text name of the function</param>
+            <param name="Arity"># of function parameters</param>
+            <returns>String representation of the prototype</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.WritePrototype_Fortran(System.String,System.Int32)">
+            <summary>
+            Writes a Fortran style function prototype
+            </summary>
+            <param name="FunctionName">Text name of the function</param>
+            <param name="Arity"># of function parameters</param>
+            <returns>String representation of the prototype</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.SaveFunction(System.Int32)">
+            <summary>
+            Get the function saved and the UI updated accordingly
+            </summary>
+            <param name="ListViewPosition">Position of the function in the listview</param>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.DeleteFunctionFromDB(System.Int32)">
+            <summary>
+            Remove the selected function ID from the database
+            </summary>
+            <param name="FunctionID">Which function to remove</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.SetValidation(System.Int32,System.Boolean)">
+            <summary>
+            Updates the database entry of this function to be validated or not
+            validated according to the Validated parameter.
+            </summary>
+            <param name="FunctionID">DBCode of the function</param>
+            <param name="Validated">Validation state of the function</param>
+        </member>
+        <member name="F:GPStudio.Client.fmFunctionEditor.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmFunctionEditor.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.fmMain.BatchManager">
+            <summary>
+            Object that manages batch processing of models
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.fmMain.SponsorServer">
+            <summary>
+            Places the remote object sponsors in a separate thread, trying to ensure
+            the communication happens even while modeling.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.fmMain.ServerManager">
+            <summary>
+            This is the object that manages all the distributed servers this
+            client can utilize.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmMain.ProjectOpen(System.Int32)">
+            <summary>
+            Determines if a project is already opened
+            </summary>
+            <param name="ProjectID">DBCode of the project in question</param>
+            <returns>True if the project is opened, false otherwise</returns>
+        </member>
+        <member name="F:GPStudio.Client.fmMain.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmMain.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmMain.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.fmPreferences.COLUMN_DESCRIPTION">
+            <summary>
+            Identify which columns belong to which field
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmPreferences.DisplayServers">
+            <summary>
+            Use the Servers.xml file to obtain the list of distributed
+            servers.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmPreferences.SaveServerConfiguration">
+            <summary>
+            Collect the server configuration from the UI and write the
+            server configuraton XML file.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.fmPreferences.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmPreferences.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmPreferences.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.fmProject">
+            <summary>
+            The results tab implements the IBatchClient interface so it can update when a
+            batch model has been completed.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.fmProject.ProjectID">
+            <summary>
+            Database code of the current project
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.fmProject.Title">
+            <summary>
+            Title to display on the form
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.fmProject.ComboDataItem">
+            <summary>
+            This is a private class used to represent an item in the list
+            of modeling Training sets.  Kind of glad I did this, it made things
+            a lot easier to deal with, need to remember to do this kind of thing
+            more in the future.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializeUISettings">
+            <summary>
+            Set all the controls according to the current project values
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.Event_ProfileDirty(System.Object,System.EventArgs)">
+            <summary>
+            Indicate the profile is now dirty
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="F:GPStudio.Client.fmProject.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.fmProject.m_ModelProfile">
+            <summary>
+            The current profile that is being modeled
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.CanModel(GPStudio.Client.GPProjectProfile@)">
+            <summary>
+            Validates whether or not the modeling should proceed.
+            </summary>
+            <param name="Profile">If the profile is valid, reference to the modeling profile</param>
+            <returns>true/false depending on whether the model is validated for simulation</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.ModelThread(System.Object)">
+            <summary>
+            The entry point for a modeling thread.  This connects to the server,
+            sends the modeling profile, training Training and then requests the model
+            to be written.
+            </summary>
+            <param name="arg">Reference to the modeling profile</param>
+        </member>
+        <member name="F:GPStudio.Client.fmProject.m_ServerData">
+            <summary>
+            Private member used to hold the statistics generated by the modeling
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.ReportFitness(System.Int32,System.Int32,GPStudio.Client.ModelingResults.ServerData)">
+            <summary>
+            Used to report the last generation stats for each server
+            </summary>
+            <param name="Generation">Generation of thedata</param>
+            <param name="Server">Index of the server being reported</param>
+            <param name="Stats">The actual data</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.GenerationComplete">
+            <summary>
+            Update the UI with the current modeling status
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.AddValidatedServer(System.String)">
+            <summary>
+            Thread safe technique to add a new validated server to the modeling UI
+            </summary>
+            <param name="Text">Name of the server</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.UpdateModelStatus(System.String)">
+            <summary>
+            Thread safe technique to update the model status.
+            </summary>
+            <param name="Text">Text to display</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.EnableStatusMarquee(System.Boolean)">
+            <summary>
+            Thread safe technique to update the model status marquee.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.ProgressIncrement">
+            <summary>
+            Thread safe technique to increment the progress bar
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.EnableModelButton">
+            <summary>
+            Thread safe technique to re-enable the modeling button (and disable the cancel button)
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.UpdateModelResults(System.Int32)">
+            <summary>
+            Thread safe technique to update the model results.  This reloads
+            the list of models for the currently selected program.  It also goes
+            through and selects the program with ID of ProgramID.
+            </summary>
+            <param name="ProgramID"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializeFitnessGraph">
+            <summary>
+            Prepares the fitness graph for use
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializePopComplexityGraph">
+            <summary>
+            Prepares the population complexity graph for use
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializePopFitnessGraph">
+            <summary>
+            Prepares the population fitness graph for use
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.LoadDataForPopFitnessGraph">
+            <summary>
+            Loads the historical modeling data for the currently selected
+            distributed server.  Typically called in reponse to the user changing
+            the combo box selection for which server to view.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.LoadDataForPopComplexityGraph">
+            <summary>
+            Loads the historical modeling data for the currently selected
+            distributed server.  Typically called in reponse to the user changing
+            the combo box selection for which server to view.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializeFitnessFunctions">
+            <summary>
+            Prepare the list of validated fitness functions that can be
+            chosen from.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializeFunctionSet">
+            <summary>
+            Prepare the list of validated functions that can be selected
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.UpdateProfileUI(GPStudio.Client.GPProjectProfile)">
+            <summary>
+            Sets all the UI controls according to this modeling profile.
+            </summary>
+            <param name="Profile">Profile to load into the UI</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.UpdateUI_Fitness(GPStudio.Client.GPProjectProfile)">
+            <summary>
+            Update the UI controls on the Fitness tab page
+            </summary>
+            <param name="Profile">Reference to the object containing the profile settings</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.CollectUI_Fitness(GPStudio.Client.GPProjectProfile)">
+            <summary>
+            Grab the UI control settings from the Fitness tab page
+            </summary>
+            <param name="Profile">Profile object to place the settings</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.UpdateProfileLabel(System.Int32,System.String)">
+            <summary>
+            Update the label of the indicated profile ID
+            </summary>
+            <param name="ProfileID">Profile DBCode to give a new name</param>
+            <param name="Name">Name to give the profile</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializeResultsDisplay">
+            <summary>
+            Get the results presented
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.AddResultsTabular(System.Int32,System.String,System.Double[],System.Double[])">
+            <summary>
+            Add the modeling results to the tabular pane
+            </summary>
+            <param name="InputDimension"></param>
+            <param name="Name"></param>
+            <param name="XValues"></param>
+            <param name="YValues"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.PrepareFitnessPredictions(System.Double[])">
+            <summary>
+            The results display is front padded with extra values that we don't need
+            for the fitness computation, so have to eliminate them before giving the
+            results to the fitness computation object.
+            </summary>
+            <param name="YValues">Full column of predctions from the model results</param>
+            <returns>Set of predictions with the front padding removed</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializeTabularGrid(GPStudio.Client.GPModelingData)">
+            <summary>
+            Prepare the tabular grid for Training
+            </summary>
+            <param name="Training">Data set to display</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.InitializeResultsGraph(GPStudio.Client.GPModelingData,System.String,System.Double[],System.Double[])">
+            <summary>
+            Prepare the Results graph for plotting.  This is still sloppy, but it
+            is better than what I had before! :)
+            </summary>
+            <param name="gpData"></param>
+            <param name="Program"></param>
+            <param name="XValues"></param>
+            <param name="YValues"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.PrepareProgramResults(System.Windows.Forms.ListViewItem)">
+            <summary>
+            Takes the currently selected program and gets the results
+            for it computed up.
+            </summary>
+            <param name="lviProgram">List View Item of the selected program</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.DisplayDiagram(System.Xml.XmlNode)">
+            <summary>
+            Builds the graphical diagram of the program.
+            </summary>
+            <param name="xmlProgram">XML representation of the program</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.BuildDiagram(Netron.Lithium.ShapeBase,System.Xml.XmlNode)">
+            <summary>
+            A recursive method that constructs the diagram.  Nothing special to note,
+            just a basic recursive technique.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.DisplayProgramAsSource(GPStudio.Interfaces.IGPProgram)">
+            <summary>
+            Gets the language version of the program written and displayed 
+            </summary>
+            <param name="iProgram">Interface to the program to translate into source code</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.ComputeProgram(GPStudio.Interfaces.IGPProgram,GPStudio.Client.GPModelingData,System.Double[]@,System.Double[]@)">
+            <summary>
+            Using the referenced modeling Training, compute the program results
+            </summary>
+            <param name="Program"></param>
+            <param name="Training"></param>
+            <param name="XValues"></param>
+            <param name="YValues"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.DisplayProgramHist(System.String)">
+            <summary>
+            Creates a histogram of the times each node occurs in the program.  this
+            helps the user evaluate the structure of the program, in particular, which
+            inputs are used and how frequently.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.SearchChildNodes(System.Xml.XmlNode,System.Collections.Generic.SortedDictionary{System.String,System.Int32})">
+            <summary>
+            Creates a frequency histogram of the nodes used in a program sub-tree
+            </summary>
+            <param name="DocNode">XML representation of the program</param>
+            <param name="Hist">Structure to record the histogram results</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.PrepareCustomFitness(System.Int32)">
+            <summary>
+            Obtains an IGPCustomFitness object, from the local server, so that custom
+            fitness functions can be used to compute results for display in the tabular
+            results pane.
+            </summary>
+            <param name="ProfileID"></param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.PrepareFunctionSet(System.Int32)">
+            <summary>
+            Pulls the function set from the database and gets them compiled up
+            and available for use when a program is selected from the results
+            view.
+            	m_FunctionSet is ALWAYS the C# code
+            	m_FunctionSetCode is the language specific code that is used 
+            		by the language writers to create the language specific programs.
+            </summary>
+            <param name="ProfileID">Profile that contains the functions to prepare</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.LoadUserDefinedFunctions(System.Int32)">
+            <summary>
+            Loads the user defined function from the database so they are ready
+            for use by the language writer.
+            </summary>
+            <param name="ProfileID">Profile that contains the functions to prepare</param>
+            <returns>True if all functions were found, False otherwise</returns>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.ExportGridToFile(System.String,System.String,System.String)">
+            <summary>
+            Exports the grid to a file.  This function obtains the root filename
+            from the user, and uses the delimeter and file extension given as parameters
+            </summary>
+            <param name="Delimeter">Value separator</param>
+            <param name="FileExtension">Filename extension</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.AddProcess(System.Object,System.String,System.String,System.DateTime,System.DateTime,System.Boolean)">
+            <summary>
+            Grab the ProcessID and associate it with the ProjectName and ProfileName, we need these to
+            figure out when a process completes whether or not to refresh the results view.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProject.ProcessComplete(System.Object,System.DateTime,System.Boolean,System.Double,System.Int32,System.Int32)">
+            <summary>
+            Have to make this baby thread safe for the UI access
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.fmSelectModelingFile.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmSelectModelingFile.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmSelectModelingFile.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.fmProjectManager.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.fmProjectManager.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:GPStudio.Client.fmProjectManager.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPDatabaseUtils.Connect">
+            <summary>
+            Opens a connection to the database
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:GPStudio.Client.GPDatabaseUtils.ConnectionString">
+            <summary>
+            Builds the connection string needed to create an ADO connection to the database
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.GPDatabaseUtils.IsDatabaseValid">
+            <summary>
+            Property that checks the database to see if it is compatible
+            with the current version of the software.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPDatabaseUtils.UpgradeDatabase">
+            <summary>
+            Upgrades a Version 1.0 database to Version 1.1.  This upgrade is the
+            addition of the field "TerminalParameters" to the table tblFunctionSet.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPDatabaseUtils.ValidateDatabase(System.String)">
+            <summary>
+            Verifies the selected database can be used
+            </summary>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPDatabaseUtils.FieldValue(System.Int32,System.String,System.String)">
+            <summary>
+            Retrieves the string value for the given table and field.  This is
+            such a commonly performed operation, I made a function to handle
+            this.  It is not recommended to be used with high-frequency, because
+            it opens a connection to the database each time it is used.
+            </summary>
+            <param name="DBCode">DBCode of the record in question</param>
+            <param name="Table">Table to search</param>
+            <param name="Field">Field to return</param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPDatabaseUtils.UpdateField(System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            Updates an integer (ID) value for the specified table, field and record.
+            This is a somewhat common task, so a function was made to do it.  This
+            should not be used for a high-frequency situation.
+            </summary>
+            <param name="DBCode">DBCode of the record to update</param>
+            <param name="Table">Table to update</param>
+            <param name="Field">Field to update</param>
+            <param name="Value">New integer value</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPDatabaseUtils.UpdateField(System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Updates an integer (ID) value for the specified table, field and record.
+            This is a somewhat common task, so a function was made to do it.  This
+            should not be used for a high-frequency situation.
+            </summary>
+            <param name="DBCode">DBCode of the record to update</param>
+            <param name="Table">Table to update</param>
+            <param name="Field">Field to update</param>
+            <param name="Value">New string value</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPDatabaseUtils.LoadFunctionFromDB(System.String,System.Int16@,System.Boolean@,System.String@,System.Int32)">
+            <summary>
+            Grab the function specs from the database
+            </summary>
+            <param name="Name"></param>
+            <param name="Arity"></param>
+            <param name="Code"></param>
+            <param name="LanguageID"></param>
+            <returns></returns>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler">
+            <summary>
+            This class manages a modeling session.  It is responsible for the management
+            of all the remote server objects as part of its effort to get a model created.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.#ctor(GPStudio.Client.GPProjectProfile,System.Int32,GPStudio.Client.GPModeler.DEL_ValidatedServer,GPStudio.Client.GPModeler.DEL_ReportStatus,GPStudio.Client.GPModeler.DEL_ReportFitness,GPStudio.Client.GPModeler.DEL_GenerationComplete)">
+            <summary>
+            Constructor that passes in the various properties the modeler needs from
+            the UI to manage the remote objects and to report back to the UI as things
+            take place.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_ValidatedServer">
+            <summary>
+            Delegate that lets the modeler report back to the UI that a new
+            server has been validated, so it can update accordingly.
+            </summary>
+            <param name="Test"></param>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_ReportStatus">
+            <summary>
+            Delegate that allows the status bar of the modeling page to
+            be updated with a string.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_ReportFitness">
+            <summary>
+            Delegate that reports the generation stats for a single server
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_GenerationComplete">
+            <summary>
+            Delegate that indicates all reporting for a generation is complete; indicates
+            it is time to update the UI.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.RequestProgram">
+            <summary>
+            Public method that goes about getting the program modeled.  This is
+            intended to be called asynchronously...
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.EvaluateFitnessDEL">
+            <summary>
+            We are going to asynchronously call the 'EvaluateFitness' method
+            of the IGPServer interface.  This allows us to call into the modeler
+            to abort a session in process very quickly.
+            </summary>
+            <param name="Generation"></param>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.ExecuteSimulation(System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler},GPStudio.Client.GPModelingData)">
+            <summary>
+            Manages the modeling simulation.
+            </summary>
+            <param name="Modelers">Collection of distributed modeler interfaces</param>
+            <param name="Training">Data set being used for the modeling</param>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_IComputeNextGeneration">
+            <summary>
+            Delegates used to support the async population update calls to the remote servers
+            </summary>
+            <param name="Generation"></param>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.UpdatePopulations(System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler},System.Int32)">
+            <summary>
+            Instructs each modeler to update its population
+            </summary>
+            <param name="Modelers"></param>
+            <param name="Generation"></param>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_IGetPopulationStats">
+            <summary>
+            Delegate used to asynchronously obtain population stats from each modeler
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.GetPopulationStats(System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler},System.Double@,System.Double@,System.Int32@,System.Int32@,System.Int32@)">
+            <summary>
+            Works through the distributed servers to obtain the population statistics
+            </summary>
+            <param name="Modelers"></param>
+            <param name="PopulationFitnessMax"></param>
+            <param name="PopulationFitnessAve"></param>
+            <param name="PopulationComplexityMin"></param>
+            <param name="PopulationComplexityMax"></param>
+            <param name="PopulationComplexityAve"></param>
+        </member>
+        <member name="F:GPStudio.Client.GPModeler.m_BestProgram">
+            <summary>
+            String of the current best program of the modeling run
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.UpdateGenerationResults(System.Int32,System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler},System.Collections.Generic.List{System.String}@)">
+            <summary>
+            Works through the set of distributed servers, gets the best program
+            and records the statistics generated at each server.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_IEvaluateFitness">
+            <summary>
+            Delegate used to support the async calls to the remote servers
+            </summary>
+            <param name="Generation"></param>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.EvaluateFitness(System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler},System.Int32)">
+            <summary>
+            Instructs each server to evaluate the fitness of their populations.  Each
+            call is asynch, but this method blocks until all have completed.
+            </summary>
+            <param name="Modelers"></param>
+            <param name="Generation"></param>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_IInitializePopulation">
+            <summary>
+            Delegate used to support the async calls to the remote servers
+            </summary>
+            <param name="PopulationSize"></param>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.InitializePopulations(System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler},System.Int32)">
+            <summary>
+            Instructs each server to build their initial populations.  Each call to
+            the server is async, but this method blocks until all populations are
+            constructed.
+            </summary>
+            <param name="Modelers"></param>
+            <param name="TotalPopulation"></param>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.InitializeServers(GPStudio.Client.ServerManagerSingleton,System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler}@,GPStudio.Client.GPModelingData@)">
+            <summary>
+            Prepares the configuration settings at each server.
+            	*Training Data
+            	*UDFs
+            	*Fitness Function
+            	*Everything else
+            This method builds a list of modeler interfaces at each server.  Remember,
+            each time the Modeler property is used from IGPServer, a NEW modeler is
+            created...so only want to do this once for each modeling session; hence,
+            have to access it and keep track of it on the client side.
+            </summary>
+            <param name="ServerManager"></param>
+            <param name="Modelers"></param>
+            <param name="Training"></param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="F:GPStudio.Client.GPModeler.m_ModelerSponsor">
+            <summary>
+            This is a client side sponsor to manage the lifetime of the function sets created for
+            the modeling session.  It is emptied when the modeler is destroyed.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.InitializeServersTopologyRing(System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler})">
+            <summary>
+            Ring Topology: Sends interfaces to the two neighboring servers.  These
+            are the only two servers programs are sent two between generations.
+            </summary>
+            <param name="Modelers"></param>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.InitializeServersTopologyStar(System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler})">
+            <summary>
+            Star Topology: Sends interfaces to all servers.  Then, when distribution is to take place,
+            the server itself computes which % servers to send to.
+            </summary>
+            <param name="Modelers"></param>
+        </member>
+        <member name="T:GPStudio.Client.GPModeler.DEL_InitializeModeler">
+            <summary>
+            Delegate used to facilitate making an async call to initialize the modelers
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.InitializeModeler(GPStudio.Interfaces.IGPServer,GPStudio.Interfaces.IGPModeler,GPStudio.Client.GPModelingData)">
+            <summary>
+            Gets the settings for an individual modeler prepared.  This function is
+            intended to be called asynchronously.
+            </summary>
+            <param name="iServer"></param>
+            <param name="iModeler"></param>
+            <param name="Training"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.IsModelRunDone(System.Double,System.Int32,System.Int32,GPStudio.Shared.GPTrainingData)">
+            <summary>
+            Checks to see if the conditions for terminating the modeling run are met
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.Abort">
+            <summary>
+            Allows client code to abort the modeling session.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModeler.SaveBestToDB(System.Int32,System.Int32@)">
+            <summary>
+            Save the best program to the database
+            </summary>
+            <returns>True/False depending upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.#ctor">
+            <summary>
+            Default constructor, create the contained GPTrainingData object
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.GPModelingData.Training">
+            <summary>
+            This class uses a containment model versus an inheritance model
+            with the GPTrainingData class because of the serialization needs
+            for the remoting...it's too much work and not needed work to deal
+            with delegates and remoting for this class
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.TrainingForModeling(System.Int32,System.Int32)">
+            <summary>
+            Well, the GPServer doesn't give a rat's ass about time series data
+            formats...it just wants inputs and it makes a program.  The real reason
+            for this is to keep the GPServer code simple and get rid of a lot
+            of unneeded complexities.  So, this will properly transform a timeseries
+            training data set into something usable by the GPServer.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.ConvertTSToModeling(System.Int32,System.Int32)">
+            <summary>
+            Converts a time series training data set into something that looks
+            like a normal data set with some number of inputs.
+            </summary>
+            <returns>Read the summary section</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.LoadSSV(System.String,GPStudio.Client.GPModelingData.DELInitProgress,GPStudio.Client.GPModelingData.DELIncrementProgress)">
+            <summary>
+            Load a data set in ssv (Semi-Colon separated values) from a disk file and import it into the database.
+            This is for european standard formats.
+            </summary>
+            <param name="Filename"></param>
+            <param name="DelInit"></param>
+            <param name="DelIncrement"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.LoadCSV(System.String,GPStudio.Client.GPModelingData.DELInitProgress,GPStudio.Client.GPModelingData.DELIncrementProgress)">
+            <summary>
+            Load a data set in csv (commad separated values) from a disk file and import it into the database
+            </summary>
+            <param name="Filename">Name of file to load</param>
+            <param name="DelInit">Delegate to call to indicate the initialization params</param>
+            <param name="DelIncrement">Delete to call for each new row of data imported</param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.ImportToDB(System.String,GPStudio.Client.GPModelingData.DELInitProgress,GPStudio.Client.GPModelingData.DELIncrementProgress,System.Collections.Generic.List{System.Collections.Generic.List{System.Double}})">
+            <summary>
+            Manages importing the data into the database
+            </summary>
+            <param name="Filename"></param>
+            <param name="DelInit"></param>
+            <param name="DelIncrement"></param>
+            <param name="TempData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.ParseFileHeader(System.String[])">
+            <summary>
+            Performs an automatic detection to see if this row of Training is a 
+            header row, if so, the values are recorded.  If no header row, then
+            header values are created.
+            </summary>
+            <param name="sFields">header values to test</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.ImportDataToDB(System.String,System.String,GPStudio.Client.GPModelingData.DELIncrementProgress)">
+            <summary>
+            Imports the current array of Training into the database
+            </summary>
+            <param name="Name">Name to record the Training set with</param>
+            <param name="Description">Description to record the Training set with</param>
+            <param name="DelIncrement">Delegate to call for indicating the status of the import</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.LoadFromDB(System.Int32,GPStudio.Client.GPModelingData.DELInitProgress,GPStudio.Client.GPModelingData.DELIncrementProgress)">
+            <summary>
+            Load a data set from the database.  This method also provides delegates
+            that can be called to allow the UI to update as the data is loaded.
+            </summary>
+            <param name="ModelingFileID"></param>
+            <param name="DelInit"></param>
+            <param name="DelIncrement"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.LoadHeaderDB(System.Data.OleDb.OleDbConnection,System.Int32,System.Int32@,System.Int32@)">
+            <summary>
+            Load the file header information, which describes what data to 
+            expect for loading
+            </summary>
+            <param name="DBConnection"></param>
+            <param name="DBCode"></param>
+            <param name="FileInputs"></param>
+            <param name="FileObjectives"></param>
+            <returns>True/False upon success or failure to read the header</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.DeleteData(System.Int32)">
+            <summary>
+            Remove the indicated Training set from the database
+            </summary>
+            <param name="ModelingFileID">DBCode of the Training set to delete</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPModelingData.FileInUse(System.Int32)">
+            <summary>
+            Checks to see if this file is in use by a project
+            </summary>
+            <param name="ModelingFileID">DBCode of the file to check out</param>
+            <returns>True/False depending upon if the file is being used</returns>
+        </member>
+        <member name="T:GPStudio.Client.GPProjectProfile">
+            <summary>
+            This class represents the settings for some particular modeling
+            profile.  It contains the settings to drive the generation of
+            a set of models.
+            TODO: This class is a bit of a mess.  It started life with the original
+            client server model, but I've really rearranged things since then.  I'd
+            like to clean this up in a major way, at some point.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.#ctor">
+            <summary>
+            Default constructor - Get the default profile settings prepared, along with
+            creating any objects we need to.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.GPProjectProfile.m_ModelingProfile">
+            <summary>
+            Contained GPModelingProfile object
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.GPProjectProfile.ModelingProfile">
+            <summary>
+            A containment model is used, instead of an inheritance model because
+            we need to send the modeling profile to a remote object and ONLY
+            a GPModelingProfile object, because GPProjectProfile can not be
+            serialized.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.GPProjectProfile.FunctionSet">
+            <summary>
+            Container that lists the user defined functions for this profile
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.Save(System.IO.Stream)">
+            <summary>
+            Saves the profile to the specified stream.  The profile is saved
+            into an XML format, just using an XmlWriter on top of the stream.
+            </summary>
+            <param name="ProfileStream">Stream to Save the profile with</param>
+            <returns>True/False upon success/failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.Load(System.IO.Stream)">
+             <summary>
+             Loads a model profile into memory.  The profile is stored in
+             an XML format, so we use XML parsing to pull out the sections
+             from the file.
+            
+             The reading of the file is done by section.  Each section is responsible
+             for opening, finding, reading and closing the file.  This makes it so the
+             settings in the file can be organized in any order...human friendly.
+             </summary>
+             <param name="ProfileStream">The stream to read the profile from</param>
+             <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.CreateProfileInDB(System.Int32@)">
+            <summary>
+            Creates an entry for this profile in the database
+            </summary>
+            <param name="ModelProfileID">DBCode of the newly created profile</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.LoadFromDB(System.Int32)">
+            <summary>
+            Loads the indicated profile into the class
+            </summary>
+            <param name="ProfileID">DBCode of the profile to load</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.UpdateProfileInDB">
+            <summary>
+            Updates an existing profile in the database with the current specifications
+            </summary>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.LoadFitnessOptions(System.Xml.XmlElement)">
+            <summary>
+            Load the fitness settings from the XML document
+            </summary>
+            <param name="xmlRoot">Element the the settings are contained within</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.SaveFitnessOptions(System.Xml.XmlTextWriter)">
+            <summary>
+            Save the fitness settings
+            </summary>
+            <param name="xmlWriter">XML stream to write to</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.LoadReproduction(System.Xml.XmlElement)">
+            <summary>
+            Load the program reproduction settings
+            </summary>
+            <param name="xmlRoot"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.SaveReproduction(System.Xml.XmlTextWriter)">
+            <summary>
+            Save the program reproduction settings
+            </summary>
+            <param name="xmlWriter"></param>
+            <returns></returns>
+        </member>
+        <member name="P:GPStudio.Client.GPProjectProfile.ProfileInUse">
+            <summary>
+            Checks to see if this profile has any generated programs that
+            are associated with it.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPProjectProfile.ValidateForModeling">
+            <summary>
+            Validates whether or not this model is complete and can be used for 
+            modeling.
+            </summary>
+            <returns>True if it is value, False otherwise</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProject.Save">
+            <summary>
+            Save this project to the database.  If the project already exists,
+            only perform an update.  Need to be careful not to delete any existing
+            results.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProject.DeleteProfile(System.Int32)">
+            <summary>
+            Removes the selected profile from the database
+            </summary>
+            <param name="ProfileID">DBCode of the profile to remove</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.GPProject.UpdateProject">
+            <summary>
+            Update all the settings for this project
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPProject.Update_tblProject">
+            <summary>
+            Update the project settings to tblProject
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.GPServerClientSponsor.m_Name">
+            <summary>
+            This property was orignally put here to help in debugging which sponsor was being
+            called.  I've left it in, in case future debugging is needed with it.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.GPServerClientSponsor.Renewal(System.Runtime.Remoting.Lifetime.ILease)">
+            <summary>
+            Specifies the renewal time for the remote object
+            </summary>
+            <param name="LeaseInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="P:GPStudio.Client.GPServerClientSponsor.Renew">
+            <summary>
+            Property that indicates whether or not this sponsor should renew the remote object.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.ModelingResults">
+            <summary>
+            This class is used to hold the results data created during a
+            modeling session.  It holds the results for each server and has
+            the ability to aggregate these data into combined stats.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ModelingResults.#ctor">
+            <summary>
+            Constructor that creates the results collection
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.ModelingResults.ServerData">
+            <summary>
+            Represents each of the stats recorded from each server for a
+            single generation.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.ModelingResults.BestProgram">
+            <summary>
+            Structure used to track the best program in the collection
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.ModelingResults.m_Results">
+            <summary>
+            Data member use to hold the server data.  The first dimension
+            is the server, the second is the results by generation.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.ModelingResults.m_BestProgram">
+            <summary>
+            Data member used to track the best program in the collection
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ModelingResults.AddServer">
+            <summary>
+            Allows a new server to be added
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ModelingResults.ReportServerData(System.Int32,System.Int32,GPStudio.Client.ModelingResults.ServerData)">
+            <summary>
+            Public method which allows data to be recorded
+            </summary>
+            <param name="WhichServer"></param>
+            <param name="Stats"></param>
+        </member>
+        <member name="P:GPStudio.Client.ModelingResults.Item(System.Int32)">
+            <summary>
+            Indexer which allows access to a single server's results
+            </summary>
+            <param name="Server"></param>
+            <returns></returns>
+        </member>
+        <member name="P:GPStudio.Client.ModelingResults.Item(System.Int32,System.Int32)">
+            <summary>
+            Indexer which allows access to a specific server and generation's results
+            </summary>
+            <param name="Server"></param>
+            <param name="Generation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.ModelingResults.BestServer(System.Int32)">
+            <summary>
+            Returns the server index containing the best program at the indicated generation
+            </summary>
+            <param name="Generation"></param>
+            <returns></returns>
+        </member>
+        <member name="P:GPStudio.Client.ModelingResults.Generations">
+            <summary>
+            Returns the number of generations of data stored
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ModelingResults.FitnessMaximum(System.Int32)">
+            <summary>
+            Returns the maximum fitness value from the entire population
+            </summary>
+            <param name="Generation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.ModelingResults.FitnessAverage(System.Int32)">
+            <summary>
+            Returns the average fitness from the entire population
+            </summary>
+            <param name="Generation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.Program.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.cab">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.CopyFolder">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.dbs">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.error">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.eventlogError">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.folderopen">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.FormRun">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.idr_dll">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.nav_down">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.nav_up">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.newfolder">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.repair">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.Save">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.Properties.Resources.services">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.ServerManagerSingleton">
+            <summary>
+            The purpose of this class is to manage the set of distributed
+            servers in use by the application.  It is indended to be used
+            as a singleton object.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ServerManagerSingleton.#ctor">
+            <summary>
+            Your basic default constructor, get the comm channels registered
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ServerManagerSingleton.GetEnumerator">
+            <summary>
+            Provide an enumerator over the registered IGPServer interfaces
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:GPStudio.Client.ServerManagerSingleton.Count">
+            <summary>
+            A count of the number of registered servers
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.ServerManagerSingleton.m_TcpRegistered">
+            <summary>
+            Indicator for the TCP channel
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.ServerManagerSingleton.m_HttpRegistered">
+            <summary>
+            Indicator for the HTTP channel
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ServerManagerSingleton.RegisterChannels">
+            <summary>
+            Register both types of channels - They throw a RemotingException
+            if something doesn't work.
+            We have to do a full registration of these channels because the client
+            registers an ISponsor interface with the remote objects, meaning that the
+            remote servers must be able to communicate back to the client.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.ServerManagerSingleton.XML_DOCUMENTROOT">
+            <summary>
+            Define the XML strings used in the server configuration file
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.ServerManagerSingleton.LOCALHOST">
+            <summary>
+            Name and port for the local computer.
+            </summary>
+        </member>
+        <member name="F:GPStudio.Client.ServerManagerSingleton.DISTRIBUTED_TIMEOUT">
+            <summary>
+            Timeout setting for remote methods to repond.  Of particular interest is
+            the time it takes to validate a remote server, the default timeout setting
+            is much too long, this makes the validation happen much more quickly.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ServerManagerSingleton.RegisterServersFromXml(System.String)">
+            <summary>
+            Registers all servers from the configuration file
+            </summary>
+            <param name="XmlFile">The configuration file to read from</param>
+        </member>
+        <member name="M:GPStudio.Client.ServerManagerSingleton.RegisterServer(System.String,System.String,System.String,System.String)">
+            <summary>
+            Add a new server to the list of available servers.
+            </summary>
+            <param name="HostName"></param>
+            <param name="Port"></param>
+            <param name="Protocol"></param>
+            <returns></returns>
+        </member>
+        <member name="F:GPStudio.Client.ServerManagerSingleton.m_Servers">
+            <summary>
+            Collection of registered servers.  The key is HostName+Port,
+            the value is a reference to the server interface.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.ServerManagerSingleton.RemoveServer(System.String,System.String)">
+            <summary>
+            Remove the indicated server from the set
+            </summary>
+            <param name="HostName"></param>
+            <param name="Port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.ServerManagerSingleton.ValidateServer(System.String,System.String,System.String,System.String)">
+            <summary>
+            Public method that allows other parts of the program to see if a
+            particular distributed server validates (is running).
+            </summary>
+            <param name="HostName"></param>
+            <param name="Port"></param>
+            <param name="Protocol"></param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="M:GPStudio.Client.ServerManagerSingleton.ValidateServer(GPStudio.Interfaces.IGPServer)">
+            <summary>
+            Call the Validate() method for IGPServer to find out if this server
+            is actually up and running.
+            </summary>
+            <param name="iGPServer">Interface to the server to test</param>
+            <returns>True/False upon success or failure</returns>
+        </member>
+        <member name="P:GPStudio.Client.ServerManagerSingleton.Item(System.String,System.String)">
+            <summary>
+            Indexer that allows access to the distributed server interfaces
+            </summary>
+            <param name="HostName"></param>
+            <param name="Port"></param>
+            <returns>Reference to the server IGPServer interface</returns>
+        </member>
+        <member name="P:GPStudio.Client.ServerManagerSingleton.LocalServer">
+            <summary>
+            Property that allows quick access to the localhost server
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.ServerManagerSingleton.Servers">
+            <summary>
+            Property that allows access to the list of registered servers.
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.ServerManagerSingleton.Descriptions">
+            <summary>
+            Property that allows access to the server descriptions.  The
+            key is "Hostname+Port".
+            </summary>
+        </member>
+        <member name="P:GPStudio.Client.ServerManagerSingleton.Sponsors">
+            <summary>
+            Property that allows access to the client side sponsors for each of the servers.
+            These sponsors can be used to sponsor other interfaces created at each server.
+            </summary>
+        </member>
+        <member name="T:GPStudio.Client.SponsorThread">
+            <summary>
+            This class manages remote client sponsor objects in their own thread
+            so they can be used asynchronously to the thread using the remote
+            objects.
+            </summary>
+        </member>
+        <member name="M:GPStudio.Client.SponsorThread.SponsorThreadStart">
+            <summary>
+            Private thread that creates client sponsor objects as needed.
+            </summary>
+            <param name="arg"></param>
+        </member>
+        <member name="M:GPStudio.Client.SponsorThread.Create(System.String)">
+            <summary>
+            Request the command thread to create a new sponsor object
+            </summary>
+            <param name="Name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GPStudio.Client.SponsorThread.Terminate">
+            <summary>
+            Tell the command thread to terminate
+            </summary>
+        </member>
+    </members>
+</doc>

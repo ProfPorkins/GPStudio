@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="GPStudio.Client.GPModeler">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>GPModeler.cs</FileName>
+      <HashCode>LIABAAAAAAAAASgMEEIAABABAAAIoAGAoABAAAAAkBA=</HashCode>
+    </TypeIdentifier>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_ValidatedServer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_ReportFitness" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_AbortModeler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.EvaluateFitnessDEL" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_InitializeModeler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_GenerationComplete" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_IEvaluateFitness" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_IComputeNextGeneration" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_IInitializePopulation" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_ReportStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_IDistributePopulation" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="GPStudio.Client.GPModeler.DEL_IGetPopulationStats" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>GPModeler.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+  </Class>
+  <Class Name="GPStudio.Shared.GPModelingProfile">
+    <Position X="3" Y="0.5" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="GPStudio.Shared.GPTrainingData">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+  </Class>
+</ClassDiagram>
