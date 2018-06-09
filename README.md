@@ -4,7 +4,7 @@ A tool that presents an accessible interface for Genetic Programming.
 
 This is a project I started out of personal interest back in early 2014.  For several years I worked on it, eventually releasing it as a commercial product.  It was a terrific learning experience developing the application, both in terms of learning about Genetic Programming and building my skills in C# and .NET.  During 2008 I decided to stop working on the project, as my attention turned towards earning a PhD in Computer Science, in distributed systems.  The code has sat silent in a private repo since then.  Recently I've decided to make the code publicly available to allow others to possibly learn from what I had done all those years ago.
 
-I don't have any plans to return to working with the project in any serious way.  If anyone is interested in working on it, I'm very happy to aid in the creation of issues and take pull requests based on those issue.
+I don't have any plans to return to working with the project in any serious way.  If anyone is interested in working on it, I'm very happy to aid in the creation of issues and take pull requests based on those issues.
 
 ## Areas for Improvement
 
