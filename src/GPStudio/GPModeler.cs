@@ -473,7 +473,7 @@ namespace GPStudio.Client
 		private delegate void DEL_IEvaluateFitness(int Generation);
 		/// <summary>
 		/// Instructs each server to evaluate the fitness of their populations.  Each
-		/// call is asynch, but this method blocks until all have completed.
+		/// call is async, but this method blocks until all have completed.
 		/// </summary>
 		/// <param name="Modelers"></param>
 		/// <param name="Generation"></param>

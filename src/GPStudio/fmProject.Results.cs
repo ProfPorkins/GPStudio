@@ -763,8 +763,8 @@ namespace GPStudio.Client
 				}
 
 				//
-				// Do an asynch call of this function.  Large data sets were causing
-				// a timeout problem, so moved it to an asynch call to eliminate that
+				// Do an async call of this function.  Large data sets were causing
+				// a timeout problem, so moved it to an async call to eliminate that
 				// problem.
 
 				//
