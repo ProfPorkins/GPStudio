@@ -15,29 +15,11 @@ namespace GPStudio.Server
 	public class GPServer: MarshalByRefObject,IGPServer
 	{
 		/// <summary>
-		/// Public constructor, right now it counts the number of processors on the computer
+		/// Public constructor, no longer does anything.
 		/// </summary>
 		public GPServer()
 		{
-			//
-			// This needs to be done before any interfaces are created, particularly the GPModelerServer class
-			DetectProcessors();
 		}
-
-		/// <summary>
-		/// Counts the number of processors on the computer.  Actual processors, HT and multi-core are all
-		/// counted because they can all be utilized.
-		/// </summary>
-		private void DetectProcessors()
-		{
-			m_ProcessorCount = 0;
-			ManagementClass mc = new ManagementClass("Win32_Processor");
-			foreach (ManagementObject mo in mc.GetInstances())
-			{
-				m_ProcessorCount++;
-			}
-		}
-		private int m_ProcessorCount = 1;
 
 		/// <summary>
 		/// This is used by a client to validate it has access to the GPServer
@@ -53,7 +35,7 @@ namespace GPStudio.Server
 		{
 			get
 			{
-				return new GPModelerServer(m_ProcessorCount);
+				return new GPModelerServer();
 			}
 		}
 		public IGPCompiler Compiler

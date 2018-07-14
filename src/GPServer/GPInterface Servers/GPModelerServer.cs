@@ -38,10 +38,8 @@ namespace GPStudio.Server
 		/// <summary>
 		/// Basic default constructor
 		/// </summary>
-		public GPModelerServer(int ProcessorCount)
+		public GPModelerServer()
 		{
-			m_ProcessorCount = ProcessorCount;
-
 			m_FunctionSet = null;
 			m_Training = null;
 
@@ -51,8 +49,6 @@ namespace GPStudio.Server
 
 			m_Servers = new List<IGPModeler>();
 		}
-
-		private int m_ProcessorCount;
 
 		/// <summary>
 		/// Prepare the lease sponsorship settings
@@ -258,8 +254,7 @@ namespace GPStudio.Server
 					this, 
 					this.Training,
 					GPEnums.RESULTS_TOLERANCE,
-					m_FunctionSet.UseInputHistory,
-					m_ProcessorCount);
+					m_FunctionSet.UseInputHistory);
 			}
 
 			m_BestProgram=m_Fitness.Compute(Generation, m_Population);

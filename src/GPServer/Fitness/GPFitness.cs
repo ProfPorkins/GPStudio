@@ -34,9 +34,8 @@ namespace GPStudio.Server
 		/// <param name="Config">Modeling configuration</param>
 		/// <param name="TrainingData">Reference to the training data</param>
 		/// <param name="Tolerance">Allowable tolerance around a resulting value for exact matching</param>
-		/// <param name="ProcessorCount">Number of processors detected on the system</param>
 		/// <param name="UseInputHistory">True, if the InputHistory parameter is in use</param>
-		public GPFitness(GPModelerServer Config,GPTrainingData TrainingData,double Tolerance,bool UseInputHistory,int ProcessorCount)
+		public GPFitness(GPModelerServer Config,GPTrainingData TrainingData,double Tolerance,bool UseInputHistory)
 		{
 			m_Config = Config;
 			m_TrainingData = TrainingData;
@@ -79,7 +78,7 @@ namespace GPStudio.Server
 
 			//
 			// Create the processing threads, one for each processor
-			InitializeProcessingThreads(ProcessorCount);
+			InitializeProcessingThreads(Environment.ProcessorCount);
 		}
 
 		~GPFitness()
@@ -528,18 +527,18 @@ namespace GPStudio.Server
 		/// </summary>
 		private void EvaluatePopulationThread()
 		{
-			const int BATCHCOUNT = 4;
+			const int BATCHCOUNT = 5;
 			//
 			// Need an array to store fitness values for each thread.  This is done
 			// once for each thread to keep from re-allocating this for each set
 			// of programs evaluated.
 			double[] Fitness = new double[BATCHCOUNT];
+			//
+			// Create an array to hold the intermediate test case results
+			double[] Predictions = new double[m_TrainingData.Rows];
+
 			try
 			{
-				//
-				// Create an array to hold the intermediate test case results
-				double[] Predictions = new double[m_TrainingData.Rows];
-
 				//
 				// First time in, suspend the thead
 				wh_Suspend.WaitOne();
@@ -567,7 +566,7 @@ namespace GPStudio.Server
 					}
 
 					//
-					// Evaluate (up to) the next 4 programs
+					// Evaluate (up to) the next BATCHCOUNT programs
 					// Be sure to synchronize with the other threads
 					int ThreadProgram;
 					int ThreadProgramsLeft = 0;
@@ -606,6 +605,7 @@ namespace GPStudio.Server
 					// Update the Max/Ave fitness.
 					lock (m_LockFitnessStat)
 					{
+						Console.Out.WriteLine(string.Format("ThreadProgram: {0}", ThreadProgram));
 						FitnessMaximum = Math.Max(FitnessMaximum, LocalMax);
 						FitnessAverage += LocalTotal;
 
@@ -631,6 +631,7 @@ namespace GPStudio.Server
 						wh_Suspend.Reset();
 						//
 						// Now, indicate the last program is done.
+						Console.Out.WriteLine("----- Finished Generation -----");
 						wh_LastProgramDone.Set();
 					}
 				}
