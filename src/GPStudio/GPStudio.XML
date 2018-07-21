@@ -1123,7 +1123,7 @@
         <member name="M:GPStudio.Client.GPModeler.EvaluateFitness(System.Collections.Generic.List{GPStudio.Interfaces.IGPModeler},System.Int32)">
             <summary>
             Instructs each server to evaluate the fitness of their populations.  Each
-            call is asynch, but this method blocks until all have completed.
+            call is async, but this method blocks until all have completed.
             </summary>
             <param name="Modelers"></param>
             <param name="Generation"></param>

@@ -484,6 +484,7 @@ namespace GPStudio.Server
 			m_BestProgramGeneration = 0;
 			m_WorstProgramGeneration = 0;
 			m_CurrentProgram = 0;
+			m_CompletedPrograms = 0;
 			m_Population = Population;
 
 			//
@@ -511,10 +512,12 @@ namespace GPStudio.Server
 		private EventWaitHandle wh_LastProgramDone;
 		private GPPopulation m_Population;
 		private int m_CurrentProgram;
+		private int m_CompletedPrograms;
 		private int m_BestProgramGeneration;
 		private int m_WorstProgramGeneration;
 		private object m_LockCurrentProgram = new object();
 		private object m_LockFitnessStat = new object();
+		private object m_LockCompletedPrograms = new object();
 
 		/// <summary>
 		/// All processing threads use this function to coordinate their activity in computing
@@ -589,6 +592,7 @@ namespace GPStudio.Server
 						// Update the program reference for the next thread to continue with
 						m_CurrentProgram += ThreadProgramsLeft;
 					}
+					int ThreadProgramsCount = ThreadProgramsLeft;
 
 					//
 					// Evaluate the set of programs
@@ -605,7 +609,6 @@ namespace GPStudio.Server
 					// Update the Max/Ave fitness.
 					lock (m_LockFitnessStat)
 					{
-						Console.Out.WriteLine(string.Format("ThreadProgram: {0}", ThreadProgram));
 						FitnessMaximum = Math.Max(FitnessMaximum, LocalMax);
 						FitnessAverage += LocalTotal;
 
@@ -621,18 +624,23 @@ namespace GPStudio.Server
 						}
 					}
 
-					//
-					// If this thread just processed the last program, signal the event that all
-					// programs are now done processing
-					if (ThreadProgram == m_Population.Count)
+					lock (m_LockCompletedPrograms)
 					{
+						m_CompletedPrograms += ThreadProgramsCount;
+
 						//
-						// Ensure that all threads synchronize into their waiting state first
-						wh_Suspend.Reset();
-						//
-						// Now, indicate the last program is done.
-						Console.Out.WriteLine("----- Finished Generation -----");
-						wh_LastProgramDone.Set();
+						// If this thread just processed the last program, signal the event that all
+						// programs are now done processing
+						//if (ThreadProgram == m_Population.Count)
+						if (m_CompletedPrograms == m_Population.Count)
+						{
+							//
+							// Ensure that all threads synchronize into their waiting state first
+							wh_Suspend.Reset();
+							//
+							// Now, indicate the last program is done.
+							wh_LastProgramDone.Set();
+						}
 					}
 				}
 			}
